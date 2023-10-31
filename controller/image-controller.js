@@ -1,13 +1,8 @@
 import grid from 'gridfs-stream';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 
+const url = 'http://localhost:8000';
 
-// const url = 'http://localhost:8000';
-
-dotenv.config();
-
-const { DB_USERNAME, DB_PASSWORD, DB, } = process.env;
 
 let gfs, gridfsBucket;
 const conn = mongoose.connection;
@@ -18,9 +13,6 @@ conn.once('open', () => {
     gfs = grid(conn.db, mongoose.mongo);
     gfs.collection('fs');
 });
-
-const url= DB;
-
 
 
 export const uploadImage = (request, response) => {
