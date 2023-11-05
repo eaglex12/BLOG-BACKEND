@@ -43,16 +43,32 @@ export const loginUser = async (request, response) => {
             response.status(200).json({ accessToken: accessToken, refreshToken: refreshToken,name: user.name, username: user.username });
         
         } else {
-            response.status(400).json({ msg: 'Password does not match' })
+            response.status(400).json({ msg: 'Invalid username or password' }); // Changed message
         }
     } catch (error) {
         response.status(500).json({ msg: 'error while login the user' })
     }
 }
-
 export const logoutUser = async (request, response) => {
-    const token = request.body.token;
-    await Token.deleteOne({ token: token });
+    try {
+        const token = request.body.token;
+        console.log('Received token:', token);
 
-    response.status(204).json({ msg: 'logout successfull' });
+
+        if (!token) {
+            return response.status(400).json({ msg: 'Token is required' });
+        }
+
+        const deletedToken = await Token.deleteOne({ token: token });
+
+        if (deletedToken.deletedCount === 1) {
+            
+            return response.status(204).json({ msg: 'Logout successful' });
+        } else {
+            return response.status(400).json({ msg: 'Invalid token' });
+        }
+    } catch (error) {
+        console.error('Error during logout:', error);
+        return response.status(500).json({ msg: 'Internal server error' });
+    }
 }
