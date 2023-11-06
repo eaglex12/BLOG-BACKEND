@@ -62,7 +62,11 @@ export const logoutUser = async (request, response) => {
         const deletedToken = await Token.deleteOne({ token: token });
 
         if (deletedToken.deletedCount === 1) {
-            
+            sessionStorage.removeItem('accessToken');
+            sessionStorage.removeItem('refreshToken');
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            console.log('Tokens removed from storage'); // Log that tokens were removed
             return response.status(204).json({ msg: 'Logout successful' });
         } else {
             return response.status(400).json({ msg: 'Invalid token' });
